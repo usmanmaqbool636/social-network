@@ -32,7 +32,6 @@ userSchema.methods.hashPassword = function (password) {
     return hash;
 }
 userSchema.methods.decryptPassword=function(password){
-    console.log("==>>",this.hashPassword(password)===this.password)
     return this.hashPassword(password)===this.password;
 }
 module.exports = mongoose.model("User", userSchema);

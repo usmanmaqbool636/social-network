@@ -4,7 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "start":"node server.js",
+    "client": "  npm run start --prefix webclient ",
+    "clientinstall": "npm install --prefix webclient",
+    "dev": "concurrently \"npm run server \" \" npm run client\" ",
   },
   "keywords": [],
   "author": "",

@@ -29,7 +29,7 @@ router.post('/signin', signInValidator, async (req, res) => {
             })
         }
         const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET,{expiresIn:9999});
-        res.cookie("t", token, { maxAge: new Date(Date.now() + 999) });
+        res.cookie("t", token, { maxAge: new Date(Date.now()+9999) });
         const { _id, name, email } = user;
         return res.json({
             token,

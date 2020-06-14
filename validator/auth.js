@@ -14,7 +14,7 @@ exports.signUpValidator = async(req, res, next) => {
     }
     const user =await User.findOne({ email:email });
     if (user) {
-        errors.email = "email already exists"
+        errors.error = "email already exists"
     }
     if (!email) {
         errors.email = "email is required"

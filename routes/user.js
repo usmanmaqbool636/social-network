@@ -11,18 +11,19 @@ router.get('/alluser', async (req, res) => {
         res.status(500).send("internal server Error")
     }
 })
+router.get("/:id", async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select({ password: false, "__v": false, updatedAt: false });
+        if (!user) return res.status(404).json({ message: "user not found" });
+        return res.json(user);
+    } catch (err) {
+        console.log(err.message)
+        res.status(500).send("internal server Error")
+    }
+})
+
 router.route("/:id")
     .all(requireSignin, verification)
-    .get(async (req, res) => {
-        try {
-            const user = await User.findById(req.params.id).select({ password: false, "__v": false, updatedAt: false });
-            if (!user) return res.status(404).json({ message: "user not found" });
-            return res.json(user);
-        } catch (err) {
-            console.log(err.message)
-            res.status(500).send("internal server Error")
-        }
-    })
     .put(async (req, res) => {
         try {
             let user = await User.findById(req.params.id);
@@ -47,4 +48,6 @@ router.route("/:id")
             res.status(500).send("internal server Error")
         }
     })
+
+
 module.exports = router;

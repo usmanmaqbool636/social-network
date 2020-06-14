@@ -5,15 +5,16 @@
   "main": "server.js",
   "scripts": {
     "server": "nodemon server.js",
-    "start":"node server.js",
-    "client": "  npm run start --prefix webclient ",
-    "clientinstall": "npm install --prefix webclient",
-    "dev": "concurrently \"npm run server \" \" npm run client\" ",
+    "start": "node server.js",
+    "client": "  npm run start --prefix Client ",
+    "clientinstall": "npm install --prefix Client",
+    "dev": "concurrently \"npm run server \" \" npm run client\" "
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "concurrently": "^5.2.0",
     "cookie-parser": "^1.4.5",
@@ -29,6 +30,11 @@
     "morgan": "^1.10.0",
     "nodemailer": "^6.4.8",
     "nodemon": "^2.0.4",
+    "react-icons": "^3.10.0",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "uninstall": "0.0.0",
     "uuid": "^8.1.0"
   }
 }

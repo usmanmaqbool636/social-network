@@ -6,18 +6,8 @@ const { postValidator } = require("../validator/post");
 const fs = require('fs');
 const _ = require('lodash')
 
-router.get('/getAllpost'
-    // ,
-    //  expressJWT({ secret: process.env.JWT_SECRET }),
-    //     async (req, res, next) => {
-    //         const user = await User.findById(req.user._id).select({ password: false, "__v": false })
-    //         if (!user) {
-    //             return res.status(404).json({ message: "User not found" });
-    //         }
-    //         req.user = user;
-    //         next()
-    //     }
-    , async (req, res) => {
+router.get('/getAllpost',
+    async (req, res) => {
         console.log(req.user);
         try {
             const posts = await Post.find().select({
@@ -77,6 +67,7 @@ router.post('/createpost', requireSignin, postValidator, async (req, res) => {
 router.route("/:postId")
     .all(requireSignin, isPoster)
     .delete(async (req, res) => {
+        console.log(req.body)
         try {
             await Post.findByIdAndRemove(req.params.postId);
             res.status(200).json({ message: "post deleted successfully" });

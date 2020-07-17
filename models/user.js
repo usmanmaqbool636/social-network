@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const { Schema } = mongoose;
+// var bcrypt = require('bcryptjs');
+
 const userSchema = new Schema({
     name: {
         type: String,
@@ -13,25 +15,36 @@ const userSchema = new Schema({
     password: {
         type: String,
     },
+    photo: {
+        data: Buffer,
+        contentType: String
+    },
+    about: {
+        type: String,
+        trim: true
+    },
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    }],
+    follower: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }]
 }, {
     timestamps: true
 });
-userSchema.pre("save", function (next) {
-
-    const hash = crypto.createHmac("sha1", process.env.PASSWORD_SECRET)
-        .update(this.password)
-        .digest("hex")
-        console.log(hash)
-    this.password = hash;
+userSchema.pre("save",async function (next) {
+    //  this.password = bcrypt.hashSync(this.password);
+    this.password = await bcrypt.hash(this.password, 10);
     next()
 })
-userSchema.methods.hashPassword = function (password) {
-    const hash = crypto.createHmac("sha1", process.env.PASSWORD_SECRET)
-        .update(password)
-        .digest("hex")
+userSchema.methods.hashPassword =async function (password) {
+    const hash= await bcrypt.hash(password, 10);
     return hash;
 }
-userSchema.methods.decryptPassword=function(password){
-    return this.hashPassword(password)===this.password;
+userSchema.methods.decryptPassword = async function (password, hash) {
+    const result= await bcrypt.compare(password, hash);
+    return result;
 }
 module.exports = mongoose.model("User", userSchema);

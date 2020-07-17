@@ -47,7 +47,6 @@ exports.signInValidator= (req, res, next) => {
         errors.password = "password is required"
     }
     if (Object.keys(errors).length > 0) {
-        console.log("error");
         return res.status(403).json(errors)
     }
     return next()

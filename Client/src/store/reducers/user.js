@@ -1,10 +1,22 @@
-import { SIGNUP, SIGNIN, SET_USER, LOGOUT, AUTH_ERROR, ALL_USER, SINGLE_USER, DELETE_PROFILE, UPDATE_PROFILE, NOT_LOGED_IN } from '../actions/types';
+import { 
+    SIGNUP, SIGNIN, 
+    SET_USER, LOGOUT, 
+    AUTH_ERROR, ALL_USER, 
+    SINGLE_USER, DELETE_PROFILE, 
+    UPDATE_PROFILE, 
+    NOT_LOGED_IN, 
+    FOLLOW, UNFOLLOW,
+    FINDPEOPLE
+
+} from '../actions/types';
+
 const initialState = {
     user: null,
     isAuthenticated: null,
     token: null,
     userList: null,
-    userProfile: null
+    userProfile: null,
+    findPeople: null
 }
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -16,7 +28,10 @@ const userReducer = (state = initialState, action) => {
                 isAuthenticated: true,
                 user: action.payload.user
             }
+
         case SET_USER:
+        case UNFOLLOW:
+        case FOLLOW:
             return {
                 ...state,
                 user: action.payload,
@@ -55,6 +70,11 @@ const userReducer = (state = initialState, action) => {
                 token: null,
                 userProfile: null
 
+            }
+        case FINDPEOPLE:
+            return {
+                ...state,
+                findPeople: action.payload
             }
         default:
             return state

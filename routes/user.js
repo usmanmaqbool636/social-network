@@ -1,19 +1,72 @@
 const router = require('express').Router();
 const User = require('../models/user');
 const { requireSignin, verification } = require('../controllers/auth');
+const { addFollower, removeFollowing } = require("../controllers/userControler");
 const _ = require('lodash');
+const fs = require('fs');
+const formidable = require('formidable');
+
+router.put("/follow", requireSignin, addFollower, async (req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(req.user._id, { $push: { following: req.body.followid } }, { new: true })
+            .select({ photo: false })
+            .populate("following", "_id name")
+            .populate("follower", "_id name");
+
+        user.password = undefined;
+        user.__v = undefined;
+        return res.status(200).json(user)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error });
+    }
+})
+
+router.put("/unfollow", requireSignin, removeFollowing, async (req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(req.user._id, { $pull: { following: req.body.unfollowid } }, { new: true })
+            .select({ photo: false })
+            .populate("following", "_id name")
+            .populate("follower", "_id name");
+        user.password = undefined;
+        user.__v = undefined;
+        return res.status(200).json(user)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error });
+    }
+})
 router.get('/alluser', async (req, res) => {
     try {
-        const users = await User.find().select({ password: false, "__v": false, updatedAt: false });
+        const users = await User.find().select({ password: false, "__v": false, updatedAt: false })
+            .select({ photo: false });
         return res.json(users);
     } catch (err) {
         console.log(err)
         res.status(500).send("internal server Error")
     }
 })
+
+
+router.get("/suggestion", requireSignin, async (req, res) => {
+    try {
+        const user=await User.findById(req.user._id);
+        const following = user.following;
+        following.push(user._id);
+        const suggestion = await User.find({ _id: { "$nin": following } }).select({name:true})
+
+        return res.json(suggestion)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("internal server Error")
+    }
+})
 router.get("/:id", async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select({ password: false, "__v": false, updatedAt: false });
+        const user = await User.findById(req.params.id)
+            .select({ password: false, "__v": false, updatedAt: false })
+            .populate("follower", "_id name")
+            .populate("following", "_id name");
         if (!user) return res.status(404).json({ message: "user not found" });
         return res.json(user);
     } catch (err) {
@@ -27,11 +80,26 @@ router.route("/:id")
     .put(async (req, res) => {
         try {
             let user = await User.findById(req.params.id);
-            user = _.extend(user, req.body)
-            await user.save();
-            user.password = undefined;
-            user.__v = undefined;
-            res.json(user);
+            const form = formidable.IncomingForm();
+            form.keepExtensions = true;
+            form.parse(req, (err, fields, files) => {
+                if (err) {
+                    return res.status(404).json({ error: "photo could not uploaded" });
+                }
+                user = _.extend(user, fields);
+
+                if (files.photo) {
+                    user.photo.data = fs.readFileSync(files.photo.path);
+                    user.photo.contentType = files.photo.type;
+                }
+                user.save((err, data) => {
+                    if (err) return res.status(400).json({ message: "user not updated" })
+                    data.password = undefined;
+                    data.__v = undefined;
+                    data.photo = undefined;
+                    return res.json(data);
+                });
+            });
         } catch (err) {
             console.log(err.message)
             res.status(500).send("internal server Error")
@@ -49,5 +117,24 @@ router.route("/:id")
         }
     })
 
+
+
+router.get("/photo/:id", async (req, res) => {
+
+    try {
+        let user = await User.findById(req.params.id);
+        if (user.photo.data) {
+            res.set(("Content-Type", user.photo.contentType))
+            return res.send(user.photo.data)
+        }
+        else {
+            return res.status(404).json({ message: "image not found" });
+        }
+    } catch (error) {
+        console.log(err.message)
+        res.status(500).send("internal server Error")
+    }
+
+})
 
 module.exports = router;

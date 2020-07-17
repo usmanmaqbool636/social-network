@@ -1,7 +1,15 @@
-import { SIGNIN, SIGNUP, SET_USER, LOGOUT, ALL_USER, SINGLE_USER, DELETE_PROFILE, UPDATE_PROFILE, AUTH_ERROR, NOT_LOGED_IN } from './types'
+import { 
+    SIGNIN, SIGNUP, 
+    SET_USER, LOGOUT, 
+    ALL_USER, SINGLE_USER, 
+    DELETE_PROFILE, UPDATE_PROFILE, 
+    AUTH_ERROR, NOT_LOGED_IN,
+    FOLLOW,
+    UNFOLLOW,
+    FINDPEOPLE
+ } from './types'
 import Axios from 'axios';
 export const signin = (user, cb) => {
-    console.log(process.env.REACT_APP_API)
     return async dispatch => {
         try {
             const res = await Axios.post(`/auth/signin`, user)
@@ -71,6 +79,22 @@ export const allUser = (cb) => {
     }
 }
 
+export const findPeople = (token,cb) => {
+    return async dispatch => {
+        try {
+            const res = await Axios.get(`/user/suggestion`,{
+                headers: {
+                    Authorization: token
+                }
+            })
+            dispatch({ type: FINDPEOPLE, payload: res.data })
+            cb()
+        } catch (err) {
+            console.log(err);
+            cb("User not fetched")
+        }
+    }
+}
 export const singleUser = (id, cb) => {
     return async dispatch => {
         try {
@@ -115,7 +139,6 @@ export const deleteProfile = (userId, token, cb) => {
 }
 export const editProfile = (id, user, token, cb) => {
     return async dispatch => {
-        console.log(token)
         try {
             const res = await Axios.put(`/user/${id}`, user, {
                 headers: {
@@ -134,4 +157,39 @@ export const notLogedIn = () => {
     return {
         type: NOT_LOGED_IN
     }
+}
+
+
+export const userfollow=(followid,token,cb)=>{
+    return async dispatch => {
+        try {
+            const res = await Axios.put(`/user/follow/`,{followid}, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            dispatch({ type: FOLLOW, payload: res.data })
+            cb();
+        } catch (err) {
+            console.log(err);
+            cb("something went wrong please try again");
+        }
+    }
+}
+export const unFollow= (unfollowid,token,cb)=>{
+    return async dispatch=>{
+        try {
+            const res = await Axios.put(`/user/unfollow/`,{unfollowid}, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            dispatch({ type: UNFOLLOW, payload: res.data })
+            cb();
+        } catch (err) {
+            console.log(err);
+            cb("something went wrong please try again");
+        }
+    }
+
 }

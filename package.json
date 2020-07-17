@@ -8,13 +8,16 @@
     "start": "node server.js",
     "client": "  npm run start --prefix Client ",
     "clientinstall": "npm install --prefix Client",
-    "dev": "concurrently \"npm run server \" \" npm run client\" "
+    "dev": "concurrently \"npm run server \" \" npm run client\" ",
+    "debug":"nodemon --inspect server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
+    "bcrypt": "^5.0.0",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "concurrently": "^5.2.0",
     "cookie-parser": "^1.4.5",

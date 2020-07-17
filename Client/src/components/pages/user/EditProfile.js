@@ -1,129 +1,170 @@
-import React, { useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { editProfile } from '../../../store/actions/user';
+import React, { useEffect, useState } from "react";
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { editProfile } from "../../../store/actions/user";
+
+let userData = new FormData();
 const EditProfile = ({ isAuthenticated, user, editProfile }) => {
     const [values, setValues] = useState({
         name: "",
         email: "",
-        password: ""
-    })
+        password: "",
+        about:""
+    });
     const [show, setShow] = useState(false);
-    // const [isAuth, setisAuth] = useState(null)
     const [err, setErr] = useState("");
     useEffect(() => {
-        console.log(isAuthenticated)
         if (isAuthenticated) {
-            const { name, email } = user;
-            setValues({ name, email });
+            const { name, email,about } = user;
+            setValues({ ...values, name, email,about });
         }
-    }, [isAuthenticated])
+    }, [isAuthenticated]);
     const handleChange = (evt) => {
-        setValues({ ...values, [evt.target.name]: evt.target.value })
-    }
-    const submitHandler = (evt) => {
-        const { name, email, password } = values;
-        evt.preventDefault();
-        if (password &&  password.length >= 1 && password.length <= 5) {
-            setErr("password must be greater than 6 character")
+        userData.set([evt.target.name], evt.target.value);
+        setValues({ ...values, [evt.target.name]: evt.target.value });
+    };
+    const handleFileChange = (evt) => {
+        userData.set([evt.target.name], evt.target.files[0]);
+        if (evt.target.files[0].size > 1048575) {
+            setErr("file must not grather than 1 mb");
             setShow(true);
             setTimeout(() => {
                 setErr("");
-                setShow(false)
+                setShow(false);
+            }, 2000);
+        }
+        setValues({ ...values, [evt.target.name]: evt.target.files[0] });
+    };
+    const submitHandler = (evt) => {
+        const { name, email, password,about } = values;
+        evt.preventDefault();
+        if (password && password.length >= 1 && password.length <= 5) {
+            setErr("password must be greater than 6 character");
+            setShow(true);
+            setTimeout(() => {
+                setErr("");
+                setShow(false);
             }, 2000);
         }
         if (!name || !email) {
-            setErr("name and email must required to perform this actions")
+            setErr("name and email must required to perform this actions");
             setShow(true);
             setTimeout(() => {
                 setErr("");
-                setShow(false)
+                setShow(false);
             }, 2000);
-        }
-        else {
-            editProfile(user._id, { name, email, password }, localStorage.jwt, (err) => {
+        } else {
+            editProfile(user._id, userData, localStorage.jwt, (err) => {
                 if (err) {
                     setErr(err);
                     setShow(true);
                     setTimeout(() => {
                         setErr("");
-                        setShow(false)
+                        setShow(false);
                     }, 2000);
-                }
-                else {
+                } else {
                     setShow(true);
                     setTimeout(() => {
                         setErr("");
-                        setShow(false)
+                        setShow(false);
                     }, 2000);
-                    console.log("user updated");
                 }
-            })
+            });
         }
-
-
-
-    }
-    const { name, email, password } = values;
-    const render = () => {
-        console.log(isAuthenticated);
-        switch (isAuthenticated) {
-            case null:
-                return (
-                    <div>
-                        <h1 className="mt-5 mb-5">Loading</h1>
+    };
+    const { name, email, password,about } = values;
+    return (
+        <div className="container">
+            <h2 className="mt-5 mb-5"> EditProfile </h2>{" "}
+            {show ? (
+                <div
+                    class={`alert ${
+                        err ? "alert-danger" : "alert-success"
+                        } alert-dismissible fade show`}
+                    role="alert"
+                >
+                    {" "}
+                    {err ? err : "updated successfully"}{" "}
+                    <button
+                        type="button"
+                        className="close"
+                        data-dismiss="alert"
+                        aria-label="Close"
+                    >
+                        <span aria-hidden="true"> & times; </span>{" "}
+                    </button>{" "}
+                </div>
+            ) : null}
+            <img className="img-thumbnail" style={{
+                width: "200",
+                height: "20vw",
+                objectFit: "cover"
+            }}
+                src={`http://localhost:8080/user/photo/${user._id}?${new Date().getTime()}`} alt={`${user.name}'s Image`} />
+            <form onSubmit={submitHandler}>
+                <div className="form-group">
+                    <label className="text-muted">profile Photo </label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        name="photo"
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group">
+                    <label className="text-muted">Name </label>{" "}
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={handleChange}
+                        name="name"
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group">
+                    <label className="text-muted">Email</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={handleChange}
+                        name="email"
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group">
+                    <label className="text-muted">Password </label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={handleChange}
+                        name="password"
+                        className="form-control"
+                    />
+                    <div className="form-group">
+                        <label className="text-muted">About </label>{" "}
+                        <textarea
+                            type="text"
+                            value={about}
+                            onChange={handleChange}
+                            name="about"
+                            className="form-control"
+                        />
                     </div>
-                )
-            case false:
-                return <Redirect to="/" />
-            case true:
-                return (
-                    <div className="container">
-                        <h2 className="mt-5 mb-5">EditProfile</h2>
-                        {show ? (
-                            <div class={`alert ${err ? "alert-danger" : "alert-success"} alert-dismissible fade show`} role="alert">
-                                {err ? err : "updated successfully"}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        ) : null}
+                </div>{" "}
+                <button className={`btn btn-raised btn-primary`} disabled={show}>
+                    {" "}
+                    {show ? "Updating Profile" : "Update Profile"}{" "}
+                </button>{" "}
+            </form>{" "}
+        </div>
+    );
+};
 
-                        <form onSubmit={submitHandler} >
-                            <div className="form-group">
-                                <label className="text-muted">
-                                    Name
-                                </label>
-                                <input type="text" value={name} onChange={handleChange} name="name" className="form-control" />
-                            </div>
-                            <div className="form-group">
-                                <label className="text-muted">
-                                    Email
-                                </label>
-                                <input type="email" value={email} onChange={handleChange} name="email" className="form-control" />
-                            </div>
-                            <div className="form-group">
-                                <label className="text-muted">
-                                    Password
-                                </label>
-                                <input type="password" value={password} onChange={handleChange} name="password" className="form-control" />
-                            </div>
-                            <button className={`btn btn-raised btn-primary`} disabled={show} >{show ? "Updating Profile" : "Update Profile"} </button>
-                        </form>
-                    </div>
-                );
-            default:
-                return "nothing"
-
-        }
-    }
-    return render();
-}
-
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         isAuthenticated: state.auth.isAuthenticated,
         user: state.auth.user,
-    }
-}
+    };
+};
 export default connect(mapStateToProps, { editProfile })(EditProfile);

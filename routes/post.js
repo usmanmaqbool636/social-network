@@ -43,7 +43,7 @@ router.get("/by/:userid", async (req, res) => {
     try {
         const post = await Post.find({ postedBy: req.params.userid })
             .populate("postedBy", " name")
-            .select({photo:false})
+            .select({ photo: false })
             .sort({ createdAt: -1 })
         return res.status(200).json(post)
     } catch (err) {
@@ -56,8 +56,6 @@ router.get("/by/:userid", async (req, res) => {
 router.post('/createpost', requireSignin, async (req, res) => {
 
     try {
-
-        // let user = await User.findById(req.params.id);
         const form = formidable.IncomingForm();
         form.keepExtensions = true;
         form.parse(req, (err, fields, files) => {
@@ -104,10 +102,38 @@ router.route("/:postId")
     })
     .put(async (req, res) => {
         try {
-            let post = await Post.findById(req.params.postId)
-            post = _.extend(post, req.body);
-            await post.save()
-            return res.json(post)
+
+            let post = await Post.findById(req.params.postId);
+            const form = formidable.IncomingForm();
+            form.keepExtensions = true;
+            form.parse(req, async (err, fields, files) => {
+                if (err) {
+                    return res.status(404).json({ error: "photo could not uploaded" });
+                }
+                const newpost = _.extend(post, fields);
+                if (files.photo) {
+                    console.log(files);
+                    newpost.photo.data = fs.readFileSync(files.photo.path);
+                    newpost.photo.contentType = files.photo.type;
+                }
+                if (err) return res.status(400).json({ message: "post no updated" })
+                await newpost.save();
+                newpost.photo = undefined;
+                return res.status(200).json(newpost);
+
+                // postValidator(fields, async (err) => {
+                //     if (err) return res.status(403).json(err)
+                //     else {
+
+                //     }
+                // })
+            });
+
+
+            // let post = await Post.findById(req.params.postId)
+            // post = _.extend(post, req.body);
+            // await post.save()
+            // return res.json(post)
         } catch (err) {
             console.log(err)
             res.status(500).json({
@@ -120,8 +146,11 @@ router.route("/:postId")
 router.get("/single/:postId", async (req, res) => {
     try {
         const post = await Post.findById(req.params.postId)
-            .populate("postedBy","name")
-            .select({photo:false})
+            .populate("postedBy", "name")
+            .populate("likes", "name")
+            .populate("comments","text createdAt")
+            .populate("comments.commentedBy","name")
+            .select({ photo: false })
         if (!post) {
             return res.status(404).json({
                 message: "post not found"
@@ -138,4 +167,92 @@ router.get("/single/:postId", async (req, res) => {
         })
     }
 })
+
+
+router.put("/like/:postId", requireSignin, async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.postId)
+        if (!post) {
+            return res.status(404).json({ message: "post not found" });
+        }
+        else {
+            if (post.likes.find(like => like._id.toString() === req.user._id.toString())) {
+                post.likes.pull(req.user._id);
+            }
+            else {
+                console.log(req.user._id);
+                post.likes.push(req.user._id);
+            }
+        }
+        // const post = await Post.findByIdAndUpdate(req.params.postId, { $push: { likes: req.user } }, { new: true });
+        await post.save();
+        post.photo = undefined;
+        return res.status(200).json(post);
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message: "internal server Error"
+        })
+    }
+});
+
+
+router.put("/comment/:postId", requireSignin, async (req, res) => {
+    try {
+        const { comment } = req.body;
+        if (!comment) {
+            return res.status(403).json({ message: "comment text must be required" })
+        }
+        if (comment.length < 4) {
+            return res.status(403).json({ message: "comment text must be grater than 3 charactercomment text must be grater than 3 character" })
+        }
+        const post = await Post.findById(req.params.postId)
+        if (!post) {
+            return res.status(404).json({ message: "post not found" });
+        }
+        else {
+            console.log(req.user._id);
+            // const post = await Post.findByIdAndUpdate(req.params.postId, { $push: { likes: req.user } }, { new: true });
+            post.comments.push({ commentedBy: req.user._id, text: comment });
+        }
+        console.log(post);
+        await post.save();
+        post.photo = undefined;
+        return res.status(200).json(post);
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message: "internal server Error"
+        })
+    }
+
+})
+
+router.put("/uncomment/:postId/:commentId", requireSignin, async (req, res) => {
+    try {
+        const { commentId, postId } = req.params;
+        const post = await Post.findById(req.params.postId)
+        if (!post) {
+            return res.status(404).json({ message: "post not found" });
+        }
+        else {
+            console.log(req.user._id);
+            // const post = await Post.findByIdAndUpdate(req.params.postId, { $push: { likes: req.user } }, { new: true });
+            post.comments.pull(commentId);
+        }
+        console.log(post);
+        await post.save();
+        post.photo = undefined;
+        return res.status(200).json(post);
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message: "internal server Error"
+        })
+    }
+})
+
 module.exports = router;

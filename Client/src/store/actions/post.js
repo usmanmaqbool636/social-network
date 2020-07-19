@@ -1,4 +1,4 @@
-import { GETALLPOST, SINGLEPOST, POSTBY_USER } from './types'
+import { GETALLPOST, SINGLEPOST, POSTBY_USER, LIKE_UNLIKE } from './types'
 import axios from 'axios'
 import { token } from 'morgan'
 
@@ -83,6 +83,22 @@ export const updatePost = (updatedpost, token, cb) => {
             cb()
         } catch (error) {
             cb("post not updated")
+        }
+    }
+}
+
+export const likeUnlike = (postId, token, cb) => {
+    return async dispatch => {
+        try {
+            const res = await axios.put(`/post/like/${postId}`, {}, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            dispatch({ type: LIKE_UNLIKE, payload: res.data });
+            cb();
+        } catch (error) {
+            cb("likes not updated");
         }
     }
 }

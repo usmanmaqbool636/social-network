@@ -52,7 +52,8 @@ const CreatePost = ({ isAuthenticated, match, user, createPost, history, singleP
         }
         else {
             if (match.params.postId) {
-                updatePost({ title,body, _id: values._id }, localStorage.jwt, (err) => {
+                postData._id=values._id
+                updatePost(postData, localStorage.jwt, (err) => {
                     if (err) {
                         setErr(err);
                         setShow(true);

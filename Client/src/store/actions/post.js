@@ -1,6 +1,5 @@
-import { GETALLPOST, SINGLEPOST, POSTBY_USER, LIKE_UNLIKE } from './types'
+import { GETALLPOST, SINGLEPOST, POSTBY_USER, LIKE_UNLIKE, COMMENT, UNCOMMENT } from './types'
 import axios from 'axios'
-import { token } from 'morgan'
 
 export const createPost = (post, token, cb) => {
     return async dispatch => {
@@ -99,6 +98,40 @@ export const likeUnlike = (postId, token, cb) => {
             cb();
         } catch (error) {
             cb("likes not updated");
+        }
+    }
+}
+
+export const comment = (postId, comment, token, cb) => {
+    return async dispatch => {
+        try {
+            const res = await axios.put(`/post/comment/${postId}`, { comment: comment.text }, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            dispatch({ type: COMMENT, payload: res.data })
+            cb();
+        } catch (error) {
+            cb("comment not posted");
+        }
+    }
+}
+
+export const unComment = (postId, commentId, token, cb) => {
+    return async dispatch => {
+        try {
+            const res = await axios.put(`/post/uncomment/${postId}/${commentId}`, {}, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            console.log(res.data);
+            dispatch({ type: UNCOMMENT, payload: res.data })
+            cb();
+        } catch (error) {
+            console.log("error=>>>>>>",error)
+            cb("comment not deleted");
         }
     }
 }

@@ -6,6 +6,7 @@ import { postByUser } from '../../../store/actions/post';
 import Modal from '../../Modal';
 import ProfileFollowButton from './followProfileButton';
 import ProfileTabs from './ProfileTabs';
+import { getRandomColor } from '../../helper';
 
 const Profile = ({ match, user, isAuthenticated, singleUser, userProfile, deleteProfile, history, postByUser, postbyUserList }) => {
     const [id, setId] = useState(null);
@@ -23,11 +24,13 @@ const Profile = ({ match, user, isAuthenticated, singleUser, userProfile, delete
             })
         }
 
-    }, [match.params.userId])
+    }, [match.params.userId, singleUser, postByUser])
 
 
     const imgError = async (evt) => {
-        evt.target.src = "https://source.unsplash.com/random";
+        // evt.target.src = "https://source.unsplash.com/random";
+        evt.target.style.backgroundColor = getRandomColor()
+        evt.target.style.overflow="hidden"
     }
 
     console.log(postbyUserList);

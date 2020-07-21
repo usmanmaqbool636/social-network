@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { getRandomColor } from '../../helper';
+
 const ProfileTabs = ({ follower, following, posts }) => {
     const imgError = async (evt) => {
-        evt.target.src = "https://source.unsplash.com/random";
+        // evt.target.src = "https://source.unsplash.com/random";
+        evt.target.style.backgroundColor = getRandomColor()
+        evt.target.style.overflow="hidden"
     }
     return (
         <div>

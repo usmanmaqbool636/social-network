@@ -148,8 +148,8 @@ router.get("/single/:postId", async (req, res) => {
         const post = await Post.findById(req.params.postId)
             .populate("postedBy", "name")
             .populate("likes", "name")
-            .populate("comments","text createdAt")
-            .populate("comments.commentedBy","name")
+            .populate("comments", "text createdAt")
+            .populate("comments.commentedBy", "name")
             .select({ photo: false })
         if (!post) {
             return res.status(404).json({
@@ -207,17 +207,13 @@ router.put("/comment/:postId", requireSignin, async (req, res) => {
         if (comment.length < 4) {
             return res.status(403).json({ message: "comment text must be grater than 3 charactercomment text must be grater than 3 character" })
         }
-        const post = await Post.findById(req.params.postId)
+        const post = await Post.findByIdAndUpdate(req.params.postId,
+            { $push: { comments: { commentedBy: req.user._id, text: comment } } },
+            { new: true }).populate("comments.commentedBy", "name")
+            .sort({ "comments.createdAt": -1 })
         if (!post) {
             return res.status(404).json({ message: "post not found" });
         }
-        else {
-            console.log(req.user._id);
-            // const post = await Post.findByIdAndUpdate(req.params.postId, { $push: { likes: req.user } }, { new: true });
-            post.comments.push({ commentedBy: req.user._id, text: comment });
-        }
-        console.log(post);
-        await post.save();
         post.photo = undefined;
         return res.status(200).json(post);
 
@@ -233,19 +229,18 @@ router.put("/comment/:postId", requireSignin, async (req, res) => {
 router.put("/uncomment/:postId/:commentId", requireSignin, async (req, res) => {
     try {
         const { commentId, postId } = req.params;
-        const post = await Post.findById(req.params.postId)
+        // const post = await Post.findById(req.params.postId)
+        const post = await Post.findByIdAndUpdate(postId, { $pull: { comments: { _id: commentId } } }, { new: true })
+            .populate("comments.commentedBy", "name")
         if (!post) {
             return res.status(404).json({ message: "post not found" });
         }
         else {
-            console.log(req.user._id);
-            // const post = await Post.findByIdAndUpdate(req.params.postId, { $push: { likes: req.user } }, { new: true });
-            post.comments.pull(commentId);
+            console.log(post);
+            await post.save();
+            post.photo = undefined;
+            return res.status(200).json(post);
         }
-        console.log(post);
-        await post.save();
-        post.photo = undefined;
-        return res.status(200).json(post);
 
     } catch (error) {
         console.log(error)

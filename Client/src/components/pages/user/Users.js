@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { allUser } from '../../../store/actions/user';
 import Spinner from '../../Spinner';
 import { Link } from 'react-router-dom';
+import { getRandomColor } from '../../helper';
+
 const Users = ({ allUser, users }) => {
     const [err, setErr] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -15,10 +17,12 @@ const Users = ({ allUser, users }) => {
                 setLoading(false)
             }
         })
-    }, [])
+    }, [allUser])
 
     const imgError = async (evt) => {
-        evt.target.src = "https://source.unsplash.com/random";
+        // evt.target.src = "https://source.unsplash.com/random";
+        evt.target.style.backgroundColor = getRandomColor()
+        evt.target.style.overflow="hidden"
     }
 
 

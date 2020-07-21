@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { logout } from '../store/actions/user';
 import { connect } from 'react-redux';
+import { getRandomColor } from './helper';
 const Menu = ({ history, logout, isAuthenticated, user },) => {
     const signOut = () => {
         logout(() => {
@@ -31,7 +32,9 @@ const Menu = ({ history, logout, isAuthenticated, user },) => {
         }
     }
     const imgError = async (evt) => {
-        evt.target.src = "https://source.unsplash.com/random";
+        // evt.target.src = "https://source.unsplash.com/random";
+        evt.target.style.backgroundColor = getRandomColor()
+        evt.target.style.overflow = "hidden"
     }
     return (
         <nav className="navbar navbar-expand-md navbar-dark bg-dark">

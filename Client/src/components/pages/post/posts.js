@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { getAllPost } from '../../../store/actions/post';
 import Spinner from '../../Spinner';
 import { Link } from 'react-router-dom';
+import { getRandomColor } from '../../helper';
+
 const GetAllPost = ({ posts, getAllPost }) => {
     const [err, setErr] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -15,10 +17,12 @@ const GetAllPost = ({ posts, getAllPost }) => {
                 setLoading(false)
             }
         })
-    }, [])
+    }, [getAllPost])
 
     const imgError = async (evt) => {
-        evt.target.src = "https://source.unsplash.com/random";
+        // evt.target.src = "https://source.unsplash.com/random";
+        evt.target.style.backgroundColor = getRandomColor()
+        evt.target.style.overflow="hidden"
     }
     return (
         <div className="container-fluid">
@@ -38,7 +42,7 @@ const GetAllPost = ({ posts, getAllPost }) => {
                                     objectFit: "contain"
                                 }}
                                     src={`http://localhost:8080/post/photo/${post._id}`}
-                                    // onError={imgError}
+                                    onError={imgError}
                                     alt={`${post.name}'s Image`} />
                                 <div className="card-body p-2">
                                     <h2 className="card-title">{post.title}</h2>

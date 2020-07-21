@@ -4,6 +4,7 @@ import { findPeople, singleUser } from '../../../store/actions/user';
 import Spinner from '../../Spinner';
 import { Link } from 'react-router-dom';
 import ProfileFollowButton from './followProfileButton';
+import { getRandomColor } from '../../helper';
 
 const FindUser = ({ findPeople, users,authuser }) => {
     const [err, setErr] = useState(null)
@@ -20,7 +21,9 @@ const FindUser = ({ findPeople, users,authuser }) => {
     }, [localStorage.jwt])
 
     const imgError = async (evt) => {
-        evt.target.src = "https://source.unsplash.com/random";
+        // evt.target.src = "https://source.unsplash.com/random";
+        evt.target.style.backgroundColor = getRandomColor()
+        evt.target.style.overflow="hidden"
     }
 
 

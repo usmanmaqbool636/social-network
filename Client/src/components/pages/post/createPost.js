@@ -22,7 +22,7 @@ const CreatePost = ({ isAuthenticated, match, user, createPost, history, singleP
             })
 
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, match.params.postId, singlePost]);
     const handleChange = (evt) => {
         postData.set([evt.target.name], evt.target.value);
         setValues({ ...values, [evt.target.name]: evt.target.value });
@@ -52,7 +52,7 @@ const CreatePost = ({ isAuthenticated, match, user, createPost, history, singleP
         }
         else {
             if (match.params.postId) {
-                postData._id=values._id
+                postData._id = values._id
                 updatePost(postData, localStorage.jwt, (err) => {
                     if (err) {
                         setErr(err);

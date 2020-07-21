@@ -1,4 +1,4 @@
-import { GETALLPOST, SINGLEPOST, POSTBY_USER, LIKE_UNLIKE } from '../actions/types';
+import { GETALLPOST, SINGLEPOST, POSTBY_USER, LIKE_UNLIKE, COMMENT, UNCOMMENT } from '../actions/types';
 const initialState = {
     posts: [],
     post: null,
@@ -22,13 +22,10 @@ const postReducer = (state = initialState, action) => {
                 postbyUser: action.payload
             }
         case LIKE_UNLIKE:
-
+        case UNCOMMENT:
+        case COMMENT:
             return {
                 ...state,
-                // post: {
-                //     ...state.post,
-                //     likes: updatedLikes
-                // }
                 post: action.payload
             }
         default:

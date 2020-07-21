@@ -80,8 +80,6 @@ class SinglePost extends React.Component {
 
                         </div>
                         {isAuthenticated && user._id === post.postedBy._id && (
-
-
                             <div className="d-inline-block my-4 float-right">
                                 <Link className="btn btn-raised btn-info mr-3"
                                     to={`/post/edit/${post._id}`}

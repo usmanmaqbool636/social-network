@@ -172,22 +172,33 @@ router.get("/single/:postId", async (req, res) => {
 router.put("/like/:postId", requireSignin, async (req, res) => {
     try {
         const post = await Post.findById(req.params.postId)
+
         if (!post) {
             return res.status(404).json({ message: "post not found" });
         }
         else {
-            if (post.likes.find(like => like._id.toString() === req.user._id.toString())) {
-                post.likes.pull(req.user._id);
+            console.log("post.likes", post.likes);
+            if (post.likes.find(like => like.toString() === req.user._id.toString())) {
+
+                const newpost = await Post.findByIdAndUpdate(req.params.postId, { $pull: { likes: req.user._id } }, { new: true })
+                    .populate("postedBy", "name")
+                    .populate("comments.commentedBy", "name");
+                // post.likes.pull(req.user._id);
+
+                newpost.photo = undefined;
+                return res.status(200).json(newpost);
             }
             else {
-                console.log(req.user._id);
+                const newpost = await Post.findByIdAndUpdate(req.params.postId, { $push: { likes: req.user._id } }, { new: true })
+                    .populate("postedBy", "name")
+                    .populate("comments.commentedBy", "name");
                 post.likes.push(req.user._id);
+                newpost.photo = undefined;
+                return res.status(200).json(newpost);
             }
         }
         // const post = await Post.findByIdAndUpdate(req.params.postId, { $push: { likes: req.user } }, { new: true });
-        await post.save();
-        post.photo = undefined;
-        return res.status(200).json(post);
+        // await post.save();
 
     } catch (error) {
         console.log(error)

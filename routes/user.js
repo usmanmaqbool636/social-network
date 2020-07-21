@@ -112,7 +112,7 @@ router.route("/:id")
                 message: "user deleted successfully"
             })
         } catch (error) {
-            console.log(err.message)
+            console.log(error.message)
             res.status(500).send("internal server Error")
         }
     })
@@ -131,7 +131,7 @@ router.get("/photo/:id", async (req, res) => {
             return res.status(404).json({ message: "image not found" });
         }
     } catch (error) {
-        console.log(err.message)
+        console.log(error.message)
         res.status(500).send("internal server Error")
     }
 

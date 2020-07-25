@@ -71,7 +71,7 @@ const SignUp = (props) => {
                     <label className="text-muted">
                         Name
                     </label>
-                    <input type="text" value={name} onChange={handleChange} name="name" className="form-control" />
+                    <input autoFocus type="text" value={name} onChange={handleChange} name="name" className="form-control" />
                 </div>
                 <div className="form-group">
                     <label className="text-muted">

@@ -39,14 +39,6 @@ const FindUser = ({ findPeople, users,authuser }) => {
                     {users.map(user => {
                         return (
                             <div className="col-md-3 card m-1" style={{ width: "18rem" }} key={`Users ${user._id}`}>
-                                {/* <img className="card-image-top" style={{
-                                    width: "100%",
-                                    height: "15vw",
-                                    objectFit: "contain"
-                                }}
-                                    src={`http://localhost:8080/user/photo/${user._id}`}
-                                    onError={imgError}
-                                    alt={`${user.name}'s Image`} /> */}
                                 <div className="card-body">
                                     <h2 className="card-title">{user.name}</h2>
                                     <p className="card-text">{user.email} </p>

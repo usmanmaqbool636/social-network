@@ -23,5 +23,12 @@ export const UPDATE_POST = "UPDATE_POST";
 export const FETCH_DATA = "FETCH_DATA";
 
 export const LIKE_UNLIKE = "LIKE_UNLIKE";
-export const COMMENT="COMMENT";
-export const UNCOMMENT="UNCOMMENT";
+export const COMMENT = "COMMENT";
+export const UNCOMMENT = "UNCOMMENT";
+export const LIKESANDCOMMENTS = "LIKESANDCOMMENTS";
+export const LIKERECEIVE = "LIKERECEIVE";
+
+
+
+export const SOCKETCONNECTED = "SOCKETCONNECTED"; 
+export const DISSOCKETCONNECTED = "DISSOCKETCONNECTED"; 

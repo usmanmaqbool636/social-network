@@ -38,6 +38,8 @@ const Menu = ({ history, logout, isAuthenticated, user },) => {
     }
     return (
         <nav className="navbar navbar-expand-md navbar-dark bg-dark">
+            <div className="container">
+            
             <a className="navbar-brand" href="/">Social Network</a>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
@@ -66,7 +68,7 @@ const Menu = ({ history, logout, isAuthenticated, user },) => {
                 {isAuthenticated && <ul className="navbar-nav  mt-2 mt-lg-0 justify-content-end">
                     <li className="nav-item dropdown">
                         <img
-                            src={`/user/photo/${user._id}`}
+                            src={`/api/user/photo/${user._id}`}
                             onError={imgError}
                             className="float-left mr-2"
                             height="35px"
@@ -76,7 +78,7 @@ const Menu = ({ history, logout, isAuthenticated, user },) => {
                                 borderRadius: "50%",
                             }}
                         />
-                        <Link to={`/user/${user._id}`} type="button" className="btn text-light">{user.name}</Link>
+                        <a href={`/user/${user._id}`} type="button" className="btn text-light">{user.name}</a>
                         <button type="button" className="btn dropdown-toggle dropdown-toggle-split text-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {/* <span class="sr-only">Toggle Dropdown</span> */}
                         </button>
@@ -90,6 +92,7 @@ const Menu = ({ history, logout, isAuthenticated, user },) => {
                         </div>
                     </li>
                 </ul>}
+            </div>
             </div>
         </nav>
     );

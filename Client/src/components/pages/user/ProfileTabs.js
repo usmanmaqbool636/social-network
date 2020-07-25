@@ -28,7 +28,7 @@ const ProfileTabs = ({ follower, following, posts }) => {
                                                 borderRadius: "50%",
                                                 border: ".8px solid #707070"
                                             }}
-                                            src={`/user/photo/${person._id}?${new Date().getTime()}`}
+                                            src={`/api/user/photo/${person._id}?${new Date().getTime()}`}
                                             alt={`${person.name}`}
                                             onError={imgError}
                                         />
@@ -60,7 +60,7 @@ const ProfileTabs = ({ follower, following, posts }) => {
                                                 borderRadius: "50%",
                                                 border: ".8px solid #707070"
                                             }}
-                                            src={`/user/photo/${person._id}?${new Date().getTime()}`}
+                                            src={`/api/user/photo/${person._id}?${new Date().getTime()}`}
                                             alt={`${person.name}`}
                                             onError={imgError}
                                         />
@@ -92,7 +92,7 @@ const ProfileTabs = ({ follower, following, posts }) => {
                                                 borderRadius: "50%",
                                                 border: ".8px solid #707070"
                                             }}
-                                            src={`/post/photo/${post._id}?${new Date().getTime()}`}
+                                            src={`/api/post/photo/${post._id}?${new Date().getTime()}`}
                                             alt={`${post.name}`}
                                             onError={imgError}
                                         />

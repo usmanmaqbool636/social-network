@@ -5,16 +5,20 @@ import { Link } from 'react-router-dom';
 const Signin = (props) => {
     const [values, setValues] = useState({
         email: "",
-        password: ""
+        password: "",
+        remember: false
     })
     const [loading, setLoading] = useState(false);
-    const { email, password } = values;
+    const { email, password,remember } = values;
     const [errors, setErrors] = useState({})
     const handleChange = (evt) => {
         setValues({ ...values, [evt.target.name]: evt.target.value })
         const newerrors = { ...errors }
         delete newerrors[evt.target.name];
         setErrors({ ...newerrors })
+    }
+    const handleCheckedChange=(evt)=>{
+        setValues({...values,[evt.target.name]:evt.target.checked});
     }
     const submitHandler = (evt) => {
         evt.preventDefault();
@@ -60,7 +64,7 @@ const Signin = (props) => {
                     <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    
+
                 </div>
             )}
 
@@ -69,7 +73,7 @@ const Signin = (props) => {
                     <label className="text-muted">
                         Email
                     </label>
-                    <input type="email" value={email} onChange={handleChange} name="email" className="form-control" />
+                    <input autoFocus type="email" value={email} onChange={handleChange} name="email" className="form-control" />
                 </div>
                 <div className="form-group">
                     <label className="text-muted">
@@ -77,11 +81,15 @@ const Signin = (props) => {
                     </label>
                     <input type="password" value={password} onChange={handleChange} name="password" className="form-control" />
                 </div>
+                <div class="form-check my-3">
+                    <input name="remember" value={remember} defaultChecked={remember} type="checkbox" onClick={handleCheckedChange} class="form-check-input" id="exampleCheck1" />
+                    <label class="form-check-label" for="exampleCheck1">Remember me</label>
+                </div>
                 <button className={`btn btn-raised btn-primary`} disabled={loading} >{loading ? "Loading" : "Login"} </button>
 
             </form>
             <div className="alert alert-dark" role="alert">
-                        Not have an account <Link to="/signup">Signup</Link> instead.
+                Not have an account <Link to="/signup">Signup</Link> instead.
                     </div>
         </div>
     );

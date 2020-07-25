@@ -9,7 +9,7 @@
     "client": "  npm run start --prefix Client ",
     "clientinstall": "npm install --prefix Client",
     "dev": "concurrently \"npm run server \" \" npm run client\" ",
-    "debug":"nodemon --inspect server.js"
+    "debug": "nodemon --inspect server.js"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +29,7 @@
     "google-auth-library": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
+    "mongodb": "^3.5.9",
     "mongoose": "^5.9.16",
     "morgan": "^1.10.0",
     "nodemailer": "^6.4.8",
@@ -37,6 +38,7 @@
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "socket.io": "^2.3.0",
     "uninstall": "0.0.0",
     "uuid": "^8.1.0"
   }

@@ -5,9 +5,11 @@ import Spinner from '../../Spinner';
 import { Link } from 'react-router-dom';
 import { getRandomColor } from '../../helper';
 
-const Users = ({ allUser, users }) => {
+const Users = ({ allUser, users, socket }) => {
     const [err, setErr] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [socketConnected, setSocketConnected] = useState(false);
+    const [dt, setDt] = useState('');
     useEffect(() => {
         allUser((err) => {
             if (err) {
@@ -18,16 +20,35 @@ const Users = ({ allUser, users }) => {
             }
         })
     }, [allUser])
+    useEffect(() => {
+        if (socket) {
+            socket.emit('neweve', "neweve called");
+            socket.on("getData1", data => {
+                setDt(data);
+            });
+        }
+    }, [socket])
+
+
 
     const imgError = async (evt) => {
         // evt.target.src = "https://source.unsplash.com/random";
         evt.target.style.backgroundColor = getRandomColor()
-        evt.target.style.overflow="hidden"
+        evt.target.style.overflow = "hidden"
     }
 
 
     return (
         <div className="container">
+            <div>
+                <h2>Welcome to Socket.IO App! - <a href="https://www.cluemediator.com/" target="_blank">Clue Mediator</a></h2>
+                <div>
+                    <b>Connection status:</b> {socket && socket.connected ? 'Connected' : 'Disconnected'}
+                </div>
+                <div style={{ marginTop: 20 }}><b>Date: </b> {dt}</div>
+            </div>
+
+
 
             <h2 className="my-5 text-center">
                 Users
@@ -37,13 +58,9 @@ const Users = ({ allUser, users }) => {
                 <div className="row no-gutters justify-content-center">
                     {users.map(user => {
                         return (
-                            <div className="col-md-3 card m-1" style={{ width: "18rem" }} key={`Users ${user._id}`}>
-                                <img className="card-image-top" style={{
-                                    width: "100%",
-                                    height: "15vw",
-                                    objectFit: "contain"
-                                }}
-                                    src={`http://localhost:8080/user/photo/${user._id}`}
+                            <div className="col-sm-12 col-md-3 card m-1 singlePost" style={{ width: "18rem" }} key={`Users ${user._id}`}>
+                                <img className="card-image-top "
+                                    src={`/api/user/photo/${user._id}`}
                                     onError={imgError}
                                     alt={`${user.name}'s Image`} />
                                 <div className="card-body">
@@ -63,7 +80,8 @@ const Users = ({ allUser, users }) => {
 }
 const mapStateToProps = state => {
     return {
-        users: state.auth.userList
+        users: state.auth.userList,
+        socket: state.socket
     }
 }
 export default connect(mapStateToProps, { allUser })(Users);

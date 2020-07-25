@@ -1,39 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { singleUser, deleteProfile } from '../../../store/actions/user';
+import { singleUser, deleteProfile, likesAndcomments, likesReceive } from '../../../store/actions/user';
 import { postByUser } from '../../../store/actions/post';
 import Modal from '../../Modal';
 import ProfileFollowButton from './followProfileButton';
 import ProfileTabs from './ProfileTabs';
 import { getRandomColor } from '../../helper';
 
-const Profile = ({ match, user, isAuthenticated, singleUser, userProfile, deleteProfile, history, postByUser, postbyUserList }) => {
+const Profile = ({ match, user, isAuthenticated, singleUser, totalComments, totalLikes, commentsreceive, likesreceive, userProfile, deleteProfile, history, postByUser, postbyUserList, likesAndcomments, likesReceive }) => {
     const [id, setId] = useState(null);
     const [err, setErr] = useState(null);
     useEffect(() => {
-        if (match.params.userId) {
+        if (!id) {
             setId(match.params.userId)
             postByUser(match.params.userId, (err) => {
                 setErr(err);
             })
+
             singleUser(match.params.userId, (err) => {
                 if (err) {
                     setErr(err)
                 }
             })
         }
+        if (isAuthenticated) {
+            likesAndcomments(localStorage.jwt, () => {
+            });
+            likesReceive(localStorage.jwt, () => {
 
-    }, [match.params.userId, singleUser, postByUser])
+            });
+        }
+
+    }, [id,isAuthenticated, singleUser, postByUser ])
 
 
     const imgError = async (evt) => {
         // evt.target.src = "https://source.unsplash.com/random";
         evt.target.style.backgroundColor = getRandomColor()
-        evt.target.style.overflow="hidden"
+        evt.target.style.overflow = "hidden"
     }
 
-    console.log(postbyUserList);
     return (
         <div className="container-fluid px-5">
             <h2 className="mt-5 mb-5">Profile</h2>
@@ -49,7 +56,7 @@ const Profile = ({ match, user, isAuthenticated, singleUser, userProfile, delete
                                 width: "100%",
                                 height: "20vw",
                                 objectFit: "contain"
-                            }} src={`/user/photo/${userProfile._id}?${new Date().getTime()}`} onError={imgError} alt={`${userProfile.name}'s Image`} />
+                            }} src={`/api/user/photo/${userProfile._id}?${new Date().getTime()}`} onError={imgError} alt={`${userProfile.name}'s Image`} />
 
                         </div>
 
@@ -61,6 +68,20 @@ const Profile = ({ match, user, isAuthenticated, singleUser, userProfile, delete
                                 <p>Email: {userProfile.email}</p>
                                 <p>joined on:{new Date(userProfile.createdAt).toDateString()} </p>
                             </div>
+                            <hr />
+                            {isAuthenticated &&
+                                <>
+                                    <div className="d-flex my-3">
+                                        <h5 className="mr-3">Likes Receive <span class="badge badge-primary">{likesreceive}</span></h5>
+                                        <h5 className="">Coments Receive <span class="badge badge-primary">{commentsreceive}</span></h5>
+                                    </div>
+                                    <div className="d-flex my-3">
+                                        <h5 className="mr-3">Likes post <span class="badge badge-secondary">{totalLikes}</span></h5>
+                                        <h5 className="">coments post <span class="badge badge-secondary">{totalComments}</span></h5>
+                                    </div>
+                                </>
+                            }
+
                             {isAuthenticated && (user._id === id) ? (
                                 <div className="d-inline-block">
                                     <Link className="btn btn-raised btn-info mr-3"
@@ -86,7 +107,6 @@ const Profile = ({ match, user, isAuthenticated, singleUser, userProfile, delete
                                     }} />
                                 </div>
                             ) : <ProfileFollowButton followingList={user ? user.following : []} followingId={userProfile._id} />}
-                            <hr />
 
                         </div>
 
@@ -113,7 +133,12 @@ const mapStateToPtops = (state) => {
         users: state.auth.userList,
         user: state.auth.user,
         userProfile: state.auth.userProfile,
-        postbyUserList: state.post.postbyUser
+        postbyUserList: state.post.postbyUser,
+        totalLikes: state.auth.totalLikes,
+        totalComments: state.auth.totalComments,
+        likesreceive: state.auth.likesreceive,
+        commentsreceive: state.auth.commentsreceive
+
     }
 }
-export default connect(mapStateToPtops, { singleUser, deleteProfile, postByUser })(Profile);
+export default connect(mapStateToPtops, { singleUser, deleteProfile, postByUser, likesAndcomments, likesReceive })(Profile);

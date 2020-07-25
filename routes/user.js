@@ -1,10 +1,12 @@
 const router = require('express').Router();
 const User = require('../models/user');
+const Post = require("../models/post");
 const { requireSignin, verification } = require('../controllers/auth');
 const { addFollower, removeFollowing } = require("../controllers/userControler");
 const _ = require('lodash');
 const fs = require('fs');
 const formidable = require('formidable');
+var mongo = require('mongodb');
 
 router.put("/follow", requireSignin, addFollower, async (req, res) => {
     try {
@@ -50,10 +52,10 @@ router.get('/alluser', async (req, res) => {
 
 router.get("/suggestion", requireSignin, async (req, res) => {
     try {
-        const user=await User.findById(req.user._id);
+        const user = await User.findById(req.user._id);
         const following = user.following;
         following.push(user._id);
-        const suggestion = await User.find({ _id: { "$nin": following } }).select({name:true})
+        const suggestion = await User.find({ _id: { "$nin": following } }).select({ name: true })
 
         return res.json(suggestion)
     } catch (error) {
@@ -61,6 +63,78 @@ router.get("/suggestion", requireSignin, async (req, res) => {
         res.status(500).send("internal server Error")
     }
 })
+
+
+router.get("/likesgave", requireSignin, async (req, res) => {
+    try {
+        console.log(req.user._id);
+
+        // const likes = await Post
+        //     .aggregate()
+        //     .unwind("likes")
+        //     .match({"likes":req.user._id})
+
+        // const likes = await Post.aggregate([
+        //     { $unwind: "$likes" },
+        //     { $match: { "likes": req.user._id } },
+        //     { $count: "likes" }
+        // ])
+
+        const likes = await Post.find({ likes: req.user._id })
+            .countDocuments()
+        const comments = await Post.aggregate()
+            .unwind("comments")
+            .group({
+                _id: "$comments.commentedBy",
+                count: { $sum: 1 }
+            })
+        // .match({"_id":req.user._id})
+        const filtercomments = comments.find(c => {
+            return c._id == req.user._id
+        })
+        // .count({})
+        // .project({ comments: true })
+
+        // const comments = await Post.aggregate([
+        //     { $unwind: "$comments" },
+        //     { $match: { "comments.commentedBy": req.user._id } },
+        //     { $count: "comments" }
+        // ])
+
+        if (!likes) {
+            return res.status(404).json({ message: "no record found" });
+        }
+        else {
+            return res.status(200).json({ likes_post: likes, comments_post: filtercomments.count });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+})
+
+
+router.get("/likesreceive", requireSignin, async (req, res) => {
+    try {
+        const post = await Post.find({ postedBy: req.user._id }).select({ photo: false })
+        let totalLikes = 0;
+        let totalComment = 0;
+        post.forEach(li => {
+            totalLikes += li.likes.length;
+            totalComment += li.comments.length;
+        })
+        if (!post) {
+            return res.status(404).json({ message: "no record found" });
+        }
+        else {
+            return res.status(200).json({ likes_receive: totalLikes, comments_receive: totalComment });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Internal Server Error" })
+    }
+})
+
 router.get("/:id", async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
@@ -107,7 +181,9 @@ router.route("/:id")
     })
     .delete(async (req, res) => {
         try {
-            await User.findByIdAndRemove(req.params.id);
+            await Post.deleteMany({ postedBy: req.params.id });
+            await Post.updateMany({}, { $pull: { "comments": { "commentedBy": req.params.id }, "likes": req.params.id } });
+            const user = await User.findByIdAndRemove(req.params.id);
             return res.json({
                 message: "user deleted successfully"
             })

@@ -46,14 +46,14 @@ class SinglePost extends React.Component {
                         <div className="col-md-12 card m-1 p-1">
                             <img className="card-image-top" style={{
                                 width: "100%",
-                                height: "15vw",
+                                height: "400px",
                                 objectFit: "contain"
                             }}
-                                src={`http://localhost:8080/post/photo/${post._id}`}
+                                src={`/api/post/photo/${post._id}`}
                                 // onError={imgError}
                                 alt={`${post.name}'s Image`} />
                             <div className="card-body p-2">
-                                <p className="card-text">{post.body} </p>
+                                <div className="card-text" dangerouslySetInnerHTML={{ __html: post.body }} />
                                 <hr />
                                 <p className="font-italic ">
                                     Posted By

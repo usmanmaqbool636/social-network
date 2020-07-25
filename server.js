@@ -19,9 +19,9 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/post", postRoutes);
-app.use('/auth', authRoutes);
-app.use("/user", userRoutes);
+app.use("/api/post", postRoutes);
+app.use('/api/auth', authRoutes);
+app.use("/api/user", userRoutes);
 
 app.get("*", (req, res) => {
     return res.sendFile(path.join(__dirname, "Client", "build", "index.html"))
@@ -33,7 +33,10 @@ app.use(function (err, req, res, next) {
 });
 
 const port = process.env.PORT;
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`server in running on port ${port}`)
 })
+
+var io = require('socket.io').listen(server);
+require('./sokects/socketio')(io);
 

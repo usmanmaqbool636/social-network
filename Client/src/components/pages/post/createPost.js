@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { createPost, singlePost, updatePost } from "../../../store/actions/post";
-
+import Editor from './Editor';
 let postData = new FormData();
 const CreatePost = ({ isAuthenticated, match, user, createPost, history, singlePost, updatePost }) => {
     const [values, setValues] = useState({
@@ -27,6 +27,13 @@ const CreatePost = ({ isAuthenticated, match, user, createPost, history, singleP
         postData.set([evt.target.name], evt.target.value);
         setValues({ ...values, [evt.target.name]: evt.target.value });
     };
+    const bodyChange = (text) => {
+        postData.set("body", text);
+        setValues({
+            ...values,
+            body: text
+        })
+    }
     const handleFileChange = (evt) => {
         postData.set([evt.target.name], evt.target.files[0]);
         if (evt.target.files[0].size > 1048575) {
@@ -120,7 +127,7 @@ const CreatePost = ({ isAuthenticated, match, user, createPost, history, singleP
                 height: "20vw",
                 objectFit: "cover"
             }}
-                src={`http://localhost:8080/post/photo/${values._id}`} alt={`${title}'s Image`} />
+                src={`/api/post/photo/${values._id}`} alt={`${title}'s Image`} />
             <form onSubmit={submitHandler}>
                 <div className="form-group">
                     <label className="text-muted">profile Photo </label>
@@ -144,13 +151,7 @@ const CreatePost = ({ isAuthenticated, match, user, createPost, history, singleP
                 </div>
                 <div className="form-group">
                     <label className="text-muted">body</label>
-                    <textarea
-                        type="text"
-                        value={body}
-                        onChange={handleChange}
-                        name="body"
-                        className="form-control"
-                    />
+                    <Editor name="body" value={body} onChange={bodyChange} className="form-control" />
                 </div>
 
                 <button className={`btn btn-raised btn-primary`} disabled={show}>

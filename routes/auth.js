@@ -27,6 +27,7 @@ router.post("/signup", signUpValidator, async (req, res) => {
 })
 router.post('/signin', signInValidator, async (req, res) => {
     try {
+        console.log(req.body);
         const user = await User.findOne({ email: req.body.email })
             .select({ photo: false })
             .populate("following", "_id name")
@@ -44,8 +45,16 @@ router.post('/signin', signInValidator, async (req, res) => {
                 error: "email and password do not match",
             })
         }
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: 9999 });
-        res.cookie("t", token, { maxAge: new Date(Date.now() + 9999) });
+        let token ="";
+        if (req.body.remember) {
+            token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+            res.cookie("t", token);
+        }
+        else{
+            token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: 9999 });
+            res.cookie("t", token, { maxAge: new Date(Date.now() + 9999) });
+        }
+        
         const { _id, name, email, createdAt } = user;
         return res.json({
             token,
@@ -65,7 +74,7 @@ router.get("/logedin", requireSignin, async (req, res) => {
             password: false,
             __v: false,
             updatedAt: false,
-            photo:false
+            photo: false
         })
             .populate("following", "_id name")
             .populate("follower", "_id name");

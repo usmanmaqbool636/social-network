@@ -100,7 +100,7 @@ const EditProfile = ({ isAuthenticated, user, editProfile }) => {
                 height: "20vw",
                 objectFit: "cover"
             }}
-                src={`http://localhost:8080/user/photo/${user._id}?${new Date().getTime()}`} alt={`${user.name}'s Image`} />
+                src={`/api/user/photo/${user._id}?${new Date().getTime()}`} alt={`${user.name}'s Image`} />
             <form onSubmit={submitHandler}>
                 <div className="form-group">
                     <label className="text-muted">profile Photo </label>

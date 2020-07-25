@@ -1,12 +1,14 @@
-import { 
-    SIGNUP, SIGNIN, 
-    SET_USER, LOGOUT, 
-    AUTH_ERROR, ALL_USER, 
-    SINGLE_USER, DELETE_PROFILE, 
-    UPDATE_PROFILE, 
-    NOT_LOGED_IN, 
+import {
+    SIGNUP, SIGNIN,
+    SET_USER, LOGOUT,
+    AUTH_ERROR, ALL_USER,
+    SINGLE_USER, DELETE_PROFILE,
+    UPDATE_PROFILE,
+    NOT_LOGED_IN,
     FOLLOW, UNFOLLOW,
-    FINDPEOPLE
+    FINDPEOPLE,
+    LIKESANDCOMMENTS,
+    LIKERECEIVE
 
 } from '../actions/types';
 
@@ -16,10 +18,27 @@ const initialState = {
     token: null,
     userList: null,
     userProfile: null,
-    findPeople: null
+    findPeople: null,
+    totalLikes: 0,
+    totalComments: 0,
+    likesReceive: 0,
+    commentsReceive: 0
 }
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
+        case LIKERECEIVE:
+            return {
+                ...state,
+                commentsreceive: action.payload.comments_receive,
+                likesreceive: action.payload.likes_receive
+
+            }
+        case LIKESANDCOMMENTS:
+            return {
+                ...state,
+                totalLikes: action.payload.likes_post,
+                totalComments: action.payload.comments_post
+            }
         case SIGNUP:
         case SIGNIN:
             return {

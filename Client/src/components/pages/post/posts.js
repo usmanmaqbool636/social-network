@@ -19,12 +19,13 @@ const GetAllPost = ({ posts, getAllPost }) => {
             }
         })
     }, [getAllPost])
+
     const changeHandler = (evt) => {
         setSearch(evt.target.value)
     }
     const imgError = async (evt) => {
         evt.target.style.backgroundColor = getRandomColor()
-        evt.target.className+=" postImgErr";
+        evt.target.className += " postImgErr";
         console.log(evt.target.className)
     }
     const filterPost = posts ? posts.filter(c => {

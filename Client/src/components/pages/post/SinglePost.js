@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { singlePost, deletePost, likeUnlike } from "../../../store/actions/post"
+import { singlePost, deletePost, likeUnlike, postUpdate } from "../../../store/actions/post"
 import { Link } from 'react-router-dom';
 import Modal from "../../Modal";
 import Comments from "./Comment"
@@ -19,11 +19,30 @@ class SinglePost extends React.Component {
 
             }
         })
+        this.SockerHandler()
+
+
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.socket !== prevProps.socket) {
+            this.SockerHandler()
+        }
+    }
+    SockerHandler = () => {
+        const socket = this.props.socket;
+        if (socket) {
+            console.log("socket connected")
+            socket.on('post', post => {
+                this.props.postUpdate(post)
+            })
+        }
     }
     likeToggle = () => {
         this.props.likeUnlike(this.props.post._id, localStorage.jwt, (err) => {
             if (err) {
                 console.log(err);
+            } else {
+                this.props.socket.emit("postUpdate", this.props.post._id)
             }
         })
     }
@@ -112,7 +131,8 @@ const mapStateToProps = (state) => {
     return {
         post: state.post.post,
         isAuthenticated: state.auth.isAuthenticated,
-        user: state.auth.user
+        user: state.auth.user,
+        socket: state.socket
     }
 }
-export default connect(mapStateToProps, { singlePost, likeUnlike, deletePost })(SinglePost);
+export default connect(mapStateToProps, { singlePost, likeUnlike, deletePost, postUpdate })(SinglePost);

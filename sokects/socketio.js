@@ -1,20 +1,17 @@
+const { random } = require("lodash");
+const Post = require("../models/post");
 const socket = io => {
-    io.on('connection', client => {
-        console.log('New Connection with id ==>>',client.id);
-        client.on('subscribeToDateEvent', interval => {
-            console.log('Client is subscribing with interval: ', interval);
+    io.on('connection', socket => {
+        socket.on("postUpdate", async (_id) => {
+            console.log("postLikes==>>", _id);
+            const post = await Post.findById(_id)
+                .populate("postedBy", "name")
+                .populate("comments", "text createdAt")
+                .populate("comments.commentedBy", "name")
+                .select({ photo: false })
 
-            // emit message to the client side
-            setInterval(() => {
-                client.emit("getData1", "subscribeToDateEvent")
-                client.emit('getDate', new Date().toUTCString());
-            }, interval);
-        });
-        client.on("neweve", (data) => {
-            console.log("data==>>", data);
-            client.emit("getData1", "this is new data");
+            io.emit("post", post)
         })
-        
     });
 }
 

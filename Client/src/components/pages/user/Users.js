@@ -23,9 +23,16 @@ const Users = ({ allUser, users, socket }) => {
     useEffect(() => {
         if (socket) {
             socket.emit('neweve', "neweve called");
-            socket.on("getData1", data => {
-                setDt(data);
+            socket.on("hi", (data) => {
+                console.log("data=>", data)
+            })
+            socket.on("postall", data => {
+                console.log("asd=>",data)
+                setDt(data.some)
             });
+            // socket.on("getData1", data => {
+            //     setDt(data);
+            // });
         }
     }, [socket])
 

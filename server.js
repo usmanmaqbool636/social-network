@@ -12,12 +12,15 @@ const userRoutes = require('./routes/user');
 dotenv.config();
 const connectDB = require('./db');
 connectDB()
-
 app.use(express.static(path.join(__dirname, "Client/build"))); app.use(cors())
 app.use(morgan('dev'))
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use((req, res, next) => {
+    app.set('socketio', io);
+    next()
+})
 
 app.use("/api/post", postRoutes);
 app.use('/api/auth', authRoutes);
@@ -32,8 +35,8 @@ app.use(function (err, req, res, next) {
     }
 });
 
-const port = process.env.PORT;
-const server = app.listen(port, () => {
+var port = process.env.PORT;
+var server = app.listen(port, () => {
     console.log(`server in running on port ${port}`)
 })
 

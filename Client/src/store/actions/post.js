@@ -2,7 +2,7 @@ import { GETALLPOST, SINGLEPOST, POSTBY_USER, LIKE_UNLIKE, COMMENT, UNCOMMENT } 
 import axios from 'axios'
 
 export const createPost = (post, token, cb) => {
-    return async dispatch => {
+    return async (dispatch) => {
         try {
             await axios.post(`/api/post/createpost`, post, {
                 headers: {
@@ -31,10 +31,13 @@ export const singlePost = (postId, cb) => {
     }
 }
 export const getAllPost = (cb) => {
-    return async dispatch => {
+    return async (dispatch, state) => {
         try {
             const res = await axios.get(`/api/post/getAllpost`)
+
+            console.log(state().socket.emit("one", { data: "one" }));
             dispatch({ type: GETALLPOST, payload: res.data })
+
             cb()
         } catch (err) {
             console.log(err);
@@ -101,6 +104,12 @@ export const likeUnlike = (postId, token, cb) => {
         }
     }
 }
+export const postUpdate = (post) => {
+    return {
+        type: LIKE_UNLIKE,
+        payload: post
+    }
+}
 
 export const comment = (postId, comment, token, cb) => {
     return async dispatch => {
@@ -130,7 +139,7 @@ export const unComment = (postId, commentId, token, cb) => {
             dispatch({ type: UNCOMMENT, payload: res.data })
             cb();
         } catch (error) {
-            console.log("error=>>>>>>",error)
+            console.log("error=>>>>>>", error)
             cb("comment not deleted");
         }
     }

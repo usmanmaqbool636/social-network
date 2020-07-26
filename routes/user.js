@@ -39,6 +39,7 @@ router.put("/unfollow", requireSignin, removeFollowing, async (req, res) => {
     }
 })
 router.get('/alluser', async (req, res) => {
+    // var io = req.app.get('socketio');
     try {
         const users = await User.find().select({ password: false, "__v": false, updatedAt: false })
             .select({ photo: false });

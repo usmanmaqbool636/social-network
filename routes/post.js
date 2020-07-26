@@ -27,6 +27,7 @@ router.get("/photo/:id", async (req, res) => {
 
 router.get('/getAllpost',
     async (req, res) => {
+      
         try {
             const posts = await Post.find().select({
                 "__v": false
@@ -147,7 +148,6 @@ router.get("/single/:postId", async (req, res) => {
     try {
         const post = await Post.findById(req.params.postId)
             .populate("postedBy", "name")
-            // .populate("likes", "name")
             .populate("comments", "text createdAt")
             .populate("comments.commentedBy", "name")
             .select({ photo: false })

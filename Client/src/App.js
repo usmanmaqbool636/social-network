@@ -24,18 +24,8 @@ const App = (props) => {
 
   useEffect(() => {
     if (props.socket) {
-      props.socket.on('connect', () => {
-        setSocketConnected(props.socket.connected);
-      });
-      props.socket.on('disconnect', () => {
-        setSocketConnected(props.socket.connected);
-      });
-      subscribeToDateEvent()
-      props.socket.on("getDate", data => {
-        setDt(data);
-      });
+     
     };
-    console.log(props.socket);
 
 
   }, [props.socket]);

@@ -9,21 +9,19 @@ class Comment extends React.Component {
     state = {
         text: ""
     }
+    commentRef = React.createRef();
 
     componentDidUpdate(prevprops) {
         if (prevprops.comments.length !== this.props.comments.length) {
             console.log("updated");
         }
     }
-    changeHandler = (evt) => {
-        this.setState({ text: evt.target.value })
-    }
     submitHandler = (evt) => {
         evt.preventDefault();
 
         const { postId } = this.props;
         const { isAuthenticated } = this.props;
-        const { text } = this.state;
+        const text = this.commentRef.current.value
         if (text.length && isAuthenticated) {
             this.props.comment(postId, { text }, localStorage.jwt, (err) => {
                 if (!err) {
@@ -38,7 +36,7 @@ class Comment extends React.Component {
         }
     }
 
- 
+
     deleteComment = (commentId) => {
         const { postId } = this.props;
 
@@ -72,9 +70,7 @@ class Comment extends React.Component {
                                 placeholder="Write comment"
                                 className="form-control"
                                 type="text"
-                                name="text"
-                                value={this.state.text}
-                                onChange={this.changeHandler}
+                                ref={this.commentRef}
                             />
                         </div>
                         <button type="submit" className="btn btn-raised btn-success ">post</button>

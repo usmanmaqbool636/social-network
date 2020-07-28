@@ -8,6 +8,7 @@ class Comment extends React.Component {
             console.log("comment updated ")
         }
     }
+    
     imgError = async (evt) => {
         // evt.target.src = "https://source.unsplash.com/random";
         evt.target.style.backgroundColor = getRandomColor()

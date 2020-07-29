@@ -21,29 +21,8 @@ const App = (props) => {
     props.connectSocket(io('http://localhost:8080'));
 
   }, []);
-
-  useEffect(() => {
-    if (props.socket) {
-     
-    };
-
-
-  }, [props.socket]);
-
-  const subscribeToDateEvent = (interval = 1000) => {
-    props.socket.emit('subscribeToDateEvent', interval);
-  }
-
   return (
     <Router>
-
-      <div>
-        <h2>Welcome to Socket.IO App! - <a href="https://www.cluemediator.com/" target="_blank">Clue Mediator</a></h2>
-        <div>
-          <b>Connection status:</b> {socketConnected ? 'Connected' : 'Disconnected'}
-        </div>
-        <div style={{ marginTop: 20 }}><b>Date: </b> {dt}</div>
-      </div>
 
       <MainRouter />
     </Router>

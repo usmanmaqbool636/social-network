@@ -47,15 +47,6 @@ const Users = ({ allUser, users, socket }) => {
 
     return (
         <div className="container">
-            <div>
-                <h2>Welcome to Socket.IO App! - <a href="https://www.cluemediator.com/" target="_blank">Clue Mediator</a></h2>
-                <div>
-                    <b>Connection status:</b> {socket && socket.connected ? 'Connected' : 'Disconnected'}
-                </div>
-                <div style={{ marginTop: 20 }}><b>Date: </b> {dt}</div>
-            </div>
-
-
 
             <h2 className="my-5 text-center">
                 Users

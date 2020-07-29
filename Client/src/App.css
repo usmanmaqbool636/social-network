@@ -1,3 +1,13 @@
+body{
+  background-image: linear-gradient(to right, #dedede, #dddddd, #dddddd, #dcdcdc, #dbdbdb, #d9d9d9, #d8d8d8, #d6d6d6, #d3d3d3, #cfcfcf, #cccccc, #c9c9c9);
+}
+.navbar{
+  background-image: linear-gradient(to right, #454545, #48494a, #4b4d4e, #4d5152, #505555, #505556, #4f5656, #4f5657, #4c5357, #4b4f56, #4b4b53, #4d474f);
+}
+.navbar-brand{
+  color: #E3E0F3;
+  font-weight: bold;
+}
 .App {
   text-align: center;
 }

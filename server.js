@@ -35,7 +35,7 @@ app.use(function (err, req, res, next) {
     }
 });
 
-var port = process.env.PORT;
+var port = process.env.PORT || 8080;
 var server = app.listen(port, () => {
     console.log(`server in running on port ${port}`)
 })

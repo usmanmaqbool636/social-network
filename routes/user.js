@@ -90,7 +90,7 @@ router.get("/likesgave", requireSignin, async (req, res) => {
                 count: { $sum: 1 }
             })
         // .match({"_id":req.user._id})
-        const filtercomments = comments.find(c => {
+        const filtercomments = comments.filter(c => {
             return c._id == req.user._id
         })
         // .count({})
@@ -106,7 +106,7 @@ router.get("/likesgave", requireSignin, async (req, res) => {
             return res.status(404).json({ message: "no record found" });
         }
         else {
-            return res.status(200).json({ likes_post: likes, comments_post: filtercomments.count });
+            return res.status(200).json({ likes_post: likes, comments_post: filtercomments.length });
         }
     } catch (error) {
         console.log(error);

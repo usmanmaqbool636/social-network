@@ -81,9 +81,9 @@ const Signin = (props) => {
                     </label>
                     <input type="password" value={password} onChange={handleChange} name="password" className="form-control" />
                 </div>
-                <div class="form-check my-3">
-                    <input name="remember" value={remember} defaultChecked={remember} type="checkbox" onClick={handleCheckedChange} class="form-check-input" id="exampleCheck1" />
-                    <label class="form-check-label" for="exampleCheck1">Remember me</label>
+                <div className="form-check my-3">
+                    <input name="remember" value={remember} defaultChecked={remember} type="checkbox" onClick={handleCheckedChange} className="form-check-input" id="exampleCheck1" />
+                    <label className="form-check-label" htmlFor="exampleCheck1">Remember me</label>
                 </div>
                 <button className={`btn btn-raised btn-primary`} disabled={loading} >{loading ? "Loading" : "Login"} </button>
 

@@ -1,4 +1,4 @@
-import { SOCKETCONNECTED, DISSOCKETCONNECTED } from "./types";
+import { SOCKETCONNECTED } from "./types";
 // import io from "socket.io-client";
 
 export const connectSocket = (socket) => {

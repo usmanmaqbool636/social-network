@@ -27,6 +27,7 @@ class Comment extends React.Component {
                 if (!err) {
                     this.setState({ text: "" })
                     this.props.socket.emit("postUpdate", postId)
+                    this.commentRef.current.value=""
                 }
             })
         }
@@ -39,8 +40,9 @@ class Comment extends React.Component {
 
     deleteComment = (commentId) => {
         const { postId } = this.props;
+        console.log(commentId,postId);
 
-        unComment(postId, commentId, localStorage.jwt, (err) => {
+        this.props.unComment(postId, commentId, localStorage.jwt, (err) => {
             if (err) {
                 console.log("comment not deleted");
             }
@@ -53,7 +55,7 @@ class Comment extends React.Component {
 
 
     render() {
-        const { comment, comments, isAuthenticated, user } = this.props;
+        const { comment, comments, isAuthenticated, user,postId } = this.props;
         if (!comment) {
             return <div>Loading</div>
         }
@@ -79,7 +81,7 @@ class Comment extends React.Component {
                     <div className="col-12">
                         <h2> ({comments.length}) Comments </h2>
                         {newComments.map(comment => (
-                            <SingleComment isAuthenticated={isAuthenticated} user={user} comment={comment} />
+                            <SingleComment isAuthenticated={isAuthenticated} deleteComment={this.deleteComment} user={user} comment={comment} key={`comment/${postId} ${comment._id}`} />
                         ))}
 
 

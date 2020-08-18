@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { connect } from 'react-redux';
 import { logedIn, notLogedIn } from './store/actions/user';
@@ -8,9 +8,6 @@ import { connectSocket } from "./store/actions/socketAction";
 import io from "socket.io-client";
 require('dotenv').config();
 const App = (props) => {
-  // const [socket, setSocket] = useState(null);
-  const [socketConnected, setSocketConnected] = useState(false);
-  const [dt, setDt] = useState('');
   useEffect(() => {
     if (localStorage.jwt) {
       props.logedIn(localStorage.jwt);

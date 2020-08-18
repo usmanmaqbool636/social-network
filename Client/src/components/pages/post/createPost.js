@@ -7,8 +7,9 @@ const CreatePost = ({ isAuthenticated, match, user, createPost, history, singleP
     const [values, setValues] = useState({
         title: "",
         body: "",
-        photo: ""
+        photo: "",
     });
+    const [img, setImg] = useState(null)
     const [show, setShow] = useState(false);
     const [err, setErr] = useState("");
     useEffect(() => {
@@ -35,6 +36,9 @@ const CreatePost = ({ isAuthenticated, match, user, createPost, history, singleP
         })
     }
     const handleFileChange = (evt) => {
+        const link = URL.createObjectURL(evt.target.files[0])
+        setImg(link)
+        console.log(link);
         postData.set([evt.target.name], evt.target.files[0]);
         if (evt.target.files[0].size > 1048575) {
             setErr("file must not grather than 1 mb");
@@ -122,12 +126,21 @@ const CreatePost = ({ isAuthenticated, match, user, createPost, history, singleP
                     </button>{" "}
                 </div>
             ) : null}
+            {img ?
+                <img className="img-thumbnail" style={{
+                    width: "200",
+                    height: "20vw",
+                    objectFit: "cover"
+                }}
+                    src={img} alt={`${title}'s Image`} />
+            :
             <img className="img-thumbnail" style={{
                 width: "200",
                 height: "20vw",
                 objectFit: "cover"
             }}
-                src={`/api/post/photo/${values._id}`} alt={`${title}'s Image`} />
+                src={`/api/post/photo/${values._id}`} />
+            }
             <form onSubmit={submitHandler}>
                 <div className="form-group">
                     <label className="text-muted">profile Photo </label>

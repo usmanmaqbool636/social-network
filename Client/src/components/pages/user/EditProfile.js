@@ -9,14 +9,15 @@ const EditProfile = ({ isAuthenticated, user, editProfile }) => {
         name: "",
         email: "",
         password: "",
-        about:""
+        about: ""
     });
+    const [img, setImg] = useState(null);
     const [show, setShow] = useState(false);
     const [err, setErr] = useState("");
     useEffect(() => {
         if (isAuthenticated) {
-            const { name, email,about } = user;
-            setValues({ ...values, name, email,about });
+            const { name, email, about } = user;
+            setValues({ ...values, name, email, about });
         }
     }, [isAuthenticated]);
     const handleChange = (evt) => {
@@ -24,6 +25,8 @@ const EditProfile = ({ isAuthenticated, user, editProfile }) => {
         setValues({ ...values, [evt.target.name]: evt.target.value });
     };
     const handleFileChange = (evt) => {
+        const link = URL.createObjectURL(evt.target.files[0])
+        setImg(link)
         userData.set([evt.target.name], evt.target.files[0]);
         if (evt.target.files[0].size > 1048575) {
             setErr("file must not grather than 1 mb");
@@ -36,7 +39,7 @@ const EditProfile = ({ isAuthenticated, user, editProfile }) => {
         setValues({ ...values, [evt.target.name]: evt.target.files[0] });
     };
     const submitHandler = (evt) => {
-        const { name, email, password,about } = values;
+        const { name, email, password, about } = values;
         evt.preventDefault();
         if (password && password.length >= 1 && password.length <= 5) {
             setErr("password must be greater than 6 character");
@@ -72,7 +75,7 @@ const EditProfile = ({ isAuthenticated, user, editProfile }) => {
             });
         }
     };
-    const { name, email, password,about } = values;
+    const { name, email, password, about } = values;
     return (
         <div className="container">
             <h2 className="mt-5 mb-5"> EditProfile </h2>{" "}
@@ -95,12 +98,21 @@ const EditProfile = ({ isAuthenticated, user, editProfile }) => {
                     </button>{" "}
                 </div>
             ) : null}
+            {img ?
+                <img className="img-thumbnail" style={{
+                    width: "200",
+                    height: "20vw",
+                    objectFit: "cover"
+                }}
+                    src={img} alt={`${user.name}'s Image`} />
+                :
             <img className="img-thumbnail" style={{
                 width: "200",
                 height: "20vw",
                 objectFit: "cover"
             }}
-                src={`/api/user/photo/${user._id}?${new Date().getTime()}`} alt={`${user.name}'s Image`} />
+                src={`/api/user/photo/${user._id}?date=${new Date().getTime()}`} alt={`${user.name}'s Image`} />
+            }
             <form onSubmit={submitHandler}>
                 <div className="form-group">
                     <label className="text-muted">profile Photo </label>

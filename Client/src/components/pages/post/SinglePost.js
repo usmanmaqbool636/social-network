@@ -107,6 +107,7 @@ class SinglePost extends React.Component {
                                 </Link>
                                 <button className="btn btn-raised btn-danger" data-toggle="modal" data-target={`#post${post._id}`}>Delete Post</button>
                                 <Modal text="profile" modelId={`post${post._id}`} deleteHandler={() => {
+                                    console.log("delete post")
                                     this.props.deletePost(post._id, localStorage.jwt, (err) => {
                                         if (err) {
                                             console.log(err)

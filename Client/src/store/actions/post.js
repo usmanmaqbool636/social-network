@@ -58,7 +58,7 @@ export const postByUser = (_id, cb) => {
         }
     }
 }
-export const deletePost = async (_id, token, cb) => {
+export const deletePost = (_id, token, cb) => {
     return async dispatch => {
         try {
             await axios.delete(`/api/post/${_id}`, {
@@ -130,12 +130,12 @@ export const comment = (postId, comment, token, cb) => {
 export const unComment = (postId, commentId, token, cb) => {
     return async dispatch => {
         try {
+            console.log("uncomment");
             const res = await axios.put(`/api/post/uncomment/${postId}/${commentId}`, {}, {
                 headers: {
                     Authorization: token
                 }
             });
-            console.log(res.data);
             dispatch({ type: UNCOMMENT, payload: res.data })
             cb();
         } catch (error) {

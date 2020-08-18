@@ -72,12 +72,12 @@ const Profile = ({ match, user, isAuthenticated, singleUser, totalComments, tota
                             {isAuthenticated &&
                                 <>
                                     <div className="d-flex my-3">
-                                        <h5 className="mr-3">Likes Receive <span class="badge badge-primary">{likesreceive}</span></h5>
-                                        <h5 className="">Coments Receive <span class="badge badge-primary">{commentsreceive}</span></h5>
+                                        <h5 className="mr-3">Likes Receive <span className="badge badge-primary">{likesreceive}</span></h5>
+                                        <h5 className="">Coments Receive <span className="badge badge-primary">{commentsreceive}</span></h5>
                                     </div>
                                     <div className="d-flex my-3">
-                                        <h5 className="mr-3">Likes post <span class="badge badge-secondary">{totalLikes}</span></h5>
-                                        <h5 className="">coments post <span class="badge badge-secondary">{totalComments}</span></h5>
+                                        <h5 className="mr-3">Likes post <span className="badge badge-secondary">{totalLikes}</span></h5>
+                                        <h5 className="">coments post <span className="badge badge-secondary">{totalComments}</span></h5>
                                     </div>
                                 </>
                             }

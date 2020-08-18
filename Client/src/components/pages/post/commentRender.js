@@ -22,15 +22,14 @@ class Comment extends React.Component {
                     <div className="col-12">
 
                         <div className="d-flex justify-content-between">
-                            <div class="media">
+                            <div className="media">
                                 <Link to={`/user/${comment.commentedBy._id}`} title={comment.commentedBy.name}>
                                     <img
-                                        src={`http://localhost:8080/api/user/photo/${comment.commentedBy._id}?${new Date().getTime()}`} class="mr-3" onError={this.imgError} />
-
+                                        src={`http://localhost:8080/api/user/photo/${comment.commentedBy._id}?${new Date().getTime()}`} className="mr-3" onError={this.imgError} />
                                 </Link>
 
-                                <div class="media-body">
-                                    <h5 style={{ lineHeight: ".5" }} class="mt-0"><Link to={`/user/${comment.commentedBy._id}`} title={comment.commentedBy.name}>{comment.commentedBy.name}</Link>  <span className="ml-2" >{moment(comment.createdAt).calendar()}</span> </h5>
+                                <div className="media-body">
+                                    <h5 style={{ lineHeight: ".5" }} className="mt-0"><Link to={`/user/${comment.commentedBy._id}`} title={comment.commentedBy.name}>{comment.commentedBy.name}</Link>  <span className="ml-2" >{moment(comment.createdAt).calendar()}</span> </h5>
                                     <p>
                                         {comment.text}
                                     </p>
@@ -41,7 +40,7 @@ class Comment extends React.Component {
                                 &&
                                 comment.commentedBy._id === user._id
                                 &&
-                                <button type="button" onClick={() => this.deleteComment(comment._id)} className="btn  btn-danger">delete</button>
+                                <button type="button" onClick={() => this.props.deleteComment(comment._id)} className="btn  btn-danger">delete</button>
                             }
 
                         </div>

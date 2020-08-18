@@ -19,7 +19,7 @@ router.get("/photo/:id", async (req, res) => {
             return res.status(404).json({ message: "image not found" });
         }
     } catch (error) {
-        console.log(err.message)
+        console.log(error.message)
         res.status(500).send("internal server Error")
     }
 
@@ -71,6 +71,7 @@ router.post('/createpost', requireSignin, async (req, res) => {
                         post.photo.data = fs.readFileSync(files.photo.path);
                         post.photo.contentType = files.photo.type;
                     }
+                    console.log(fields)
                     if (err) return res.status(400).json({ message: "post no created" })
                     post.postedBy = req.user._id;
                     await post.save();
@@ -81,7 +82,7 @@ router.post('/createpost', requireSignin, async (req, res) => {
         });
 
     } catch (err) {
-        console.log(err.message)
+        console.log(err)
         res.status(500).json({
             message: "internal server Error"
         })
@@ -215,7 +216,7 @@ router.put("/comment/:postId", requireSignin, async (req, res) => {
         if (!comment) {
             return res.status(403).json({ message: "comment text must be required" })
         }
-        if (comment.length < 4) {
+        if (comment.length < 1) {
             return res.status(403).json({ message: "comment text must be grater than 3 charactercomment text must be grater than 3 character" })
         }
         const post = await Post.findByIdAndUpdate(req.params.postId,

@@ -8,8 +8,7 @@ import { getRandomColor } from '../../helper';
 const Users = ({ allUser, users, socket }) => {
     const [err, setErr] = useState(null)
     const [loading, setLoading] = useState(true)
-    const [socketConnected, setSocketConnected] = useState(false);
-    const [dt, setDt] = useState('');
+    // const [dt, setDt] = useState('');
     useEffect(() => {
         allUser((err) => {
             if (err) {
@@ -28,7 +27,7 @@ const Users = ({ allUser, users, socket }) => {
             })
             socket.on("postall", data => {
                 console.log("asd=>",data)
-                setDt(data.some)
+                // setDt(data.some)
             });
             // socket.on("getData1", data => {
             //     setDt(data);

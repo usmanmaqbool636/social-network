@@ -43,7 +43,7 @@ const GetAllPost = ({ posts, getAllPost }) => {
                 Recent Posts
             </h2>
             {err && <div className="alert alert-warning">{err}</div>}
-            {posts.length < 0 && <h6 className="text-warning">No Post found</h6>}
+            {!loading && posts.length === 0 && <h4 className="text-center text-warning">No Post found</h4>}
             {posts && (
                 <div className="row justify-content-center">
                     {filterPost.map(post => {

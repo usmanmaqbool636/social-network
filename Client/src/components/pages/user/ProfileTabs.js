@@ -18,7 +18,7 @@ const ProfileTabs = ({ follower, following, posts }) => {
                         <div key={`tabfollowing${person._id}`}>
                             <div className="row  mt-2 p-2">
                                 <div>
-                                    <Link to={`/user/${person._id}`}>
+                                    <a href={`/user/${person._id}`}>
                                         <img
                                             className="float-left mr-2"
                                             height="40px"
@@ -36,7 +36,7 @@ const ProfileTabs = ({ follower, following, posts }) => {
                                             <h3>{person.name}</h3>
                                         </div>
 
-                                    </Link>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -50,7 +50,7 @@ const ProfileTabs = ({ follower, following, posts }) => {
                         <div key={`tabfollower${person._id}`}>
                             <div className="row  mt-2 p-2">
                                 <div className="">
-                                    <Link to={`/user/${person._id}`}>
+                                    <a href={`/user/${person._id}`}>
                                         <img
                                             className="float-left mr-2"
                                             height="40px"
@@ -68,7 +68,7 @@ const ProfileTabs = ({ follower, following, posts }) => {
                                             <h3>{person.name}</h3>
                                         </div>
 
-                                    </Link>
+                                    </a>
                                 </div>
                             </div>
                         </div>

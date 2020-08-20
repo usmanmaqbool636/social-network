@@ -15,7 +15,7 @@ const App = (props) => {
     else {
       props.notLogedIn();
     }
-    props.connectSocket(io('http://localhost:8080'));
+    props.connectSocket(io('https://social-network-re-1.herokuapp.com'));
 
   }, []);
   return (

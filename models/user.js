@@ -45,6 +45,7 @@ userSchema.methods.hashPassword =async function (password) {
 }
 userSchema.methods.decryptPassword = async function (password, hash) {
     const result= await bcrypt.compare(password, hash);
+    console.log(result);
     return result;
 }
 module.exports = mongoose.model("User", userSchema);
